@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String         @id @default(uuid())
+  email          String         @unique
+  username       String         @unique
+  password       String
+  avatar         String?
+  createdAt      DateTime       @default(now())
+  
+  predicciones   Prediccion[]
+  puntos         Puntos?
+  ligasCreadas   LigaPrivada[]  @relation("LigaCreador")
+  ligasMiembro   LigaPrivada[]  @relation("LigaMiembros")
+}
+
+model Prediccion {
+  id             String   @id @default(uuid())
+  userId         String
+  partidoId      String   // ID del partido en football-data.org
+  golesLocal     Int
+  golesVisitante Int
+  createdAt      DateTime @default(now())
+
+  user           User     @relation(fields: [userId], references: [id])
+}
+
+model Puntos {
+  id                String @id @default(uuid())
+  userId            String @unique
+  total             Int    @default(0)
+  partidosAcertados Int    @default(0)
+  resultadosExactos Int    @default(0)
+
+  user              User   @relation(fields: [userId], references: [id])
+}
+
+model LigaPrivada {
+  id        String   @id @default(uuid())
+  nombre    String
+  codigo    String   @unique
+  creadorId String
+
+  creador   User     @relation("LigaCreador", fields: [creadorId], references: [id])
+  miembros  User[]   @relation("LigaMiembros")
+}

@@ -1,16 +1,55 @@
-# React + Vite
+# MundialPulse 2026
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Plataforma interactiva para el Mundial 2026. Predicciones, ranking y seguimiento de partidos en vivo.
 
-Currently, two official plugins are available:
+## Requisitos Previos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Node.js (v18 o superior)
+- PostgreSQL (puedes usar una instancia en la nube como Neon.tech)
 
-## React Compiler
+## Instalación
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Clona el repositorio
+2. Instala las dependencias del frontend y del backend:
 
-## Expanding the ESLint configuration
+```bash
+# Frontend
+cd frontend
+npm install
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# Backend
+cd ../backend
+npm install
+```
+
+## Configuración del Backend
+
+1. Ve al directorio `backend`.
+2. Crea un archivo `.env` basado en `.env.example`:
+```bash
+cp .env.example .env
+```
+3. Configura tu `DATABASE_URL` en el archivo `.env` apuntando a tu base de datos de Neon o PostgreSQL local.
+4. Genera el cliente de Prisma y envía el esquema a la base de datos:
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+## Iniciar el Proyecto
+
+Para correr ambos servicios localmente en modo desarrollo:
+
+**Terminal 1 (Backend - Puerto 5000)**
+```bash
+cd backend
+npm run dev
+```
+
+**Terminal 2 (Frontend - Puerto 5173)**
+```bash
+cd frontend
+npm run dev
+```
+
+La aplicación estará disponible en `http://localhost:5173`.
