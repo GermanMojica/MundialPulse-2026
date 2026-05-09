@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAlbumPais } from '../hooks/useAlbum';
 import { getPaisData } from '../utils/paises-data';
 import FiguritaCard from '../components/album/FiguritaCard';
+import FiguritaModal from '../components/album/FiguritaModal';
 import { FiArrowLeft } from 'react-icons/fi';
 import { IoCart } from 'react-icons/io5';
 import { motion } from 'framer-motion';
@@ -10,8 +11,19 @@ import { motion } from 'framer-motion';
 const AlbumPais = () => {
   const { codigo } = useParams();
   const navigate = useNavigate();
-  const { data: figuritasData, isLoading, error, refetch } = useAlbumPais(codigo);
+  const { data: figuritasData, isLoading, error } = useAlbumPais(codigo);
   
+  const [selectedFig, setSelectedFig] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const figuritas = figuritasData?.figuritas || [];
+  const paisNombre = figuritasData?.pais || codigo;
+  const pData = getPaisData(codigo, paisNombre);
+
+  const sortedFiguritas = useMemo(() => {
+    return [...figuritas].sort((a, b) => a.numero - b.numero);
+  }, [figuritas]);
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4 bg-[#0a0a0f]">
@@ -39,24 +51,13 @@ const AlbumPais = () => {
     );
   }
 
-  const figuritas = figuritasData.figuritas || [];
-  const paisNombre = figuritasData.pais || codigo;
-  const pData = getPaisData(codigo, paisNombre);
-
   const obtenidas = figuritas.filter(f => f.obtenida).length;
   const total = figuritas.length || 23;
   const porcentaje = Math.round((obtenidas / total) * 100);
 
-  // Ordenar figuritas: por número siempre para que parezca un álbum real
-  const sortedFiguritas = useMemo(() => {
-    return [...figuritas].sort((a, b) => a.numero - b.numero);
-  }, [figuritas]);
-
   return (
     <div className="min-h-screen pb-32 bg-[#0a0a0f]">
-      {/* Header Visual Premium */}
       <div className="relative w-full overflow-hidden">
-        {/* Background Blur Effect */}
         <div 
           className="absolute inset-0 opacity-20 blur-3xl"
           style={{ backgroundColor: pData.colorPrimario }}
@@ -95,32 +96,18 @@ const AlbumPais = () => {
                   transition={{ delay: 0.1 }}
                 >
                   <div className="flex flex-col md:flex-row items-center gap-4 mb-2">
-                    <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase italic italic">
+                    <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase italic">
                       {pData.nombre}
                     </h1>
-                    
-                    {/* Selector de País Rápido */}
-                    <select 
-                      className="bg-white/5 border border-white/10 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest outline-none focus:border-primary/50 transition-colors cursor-pointer"
-                      value={codigo}
-                      onChange={(e) => navigate(`/album/pais/${e.target.value}`)}
-                    >
-                      <option value={codigo} disabled>{pData.nombre}</option>
-                      {/* Aquí idealmente mostraríamos todos los países, pero por ahora permitimos volver */}
-                      <option value="">Seleccionar otro...</option>
-                    </select>
-
                     <span className="bg-primary/20 text-primary text-[10px] font-black px-3 py-1 rounded-full border border-primary/20 uppercase tracking-widest">
                       FIFA World Cup 2026
                     </span>
                   </div>
-                  
                   <p className="text-slate-400 text-sm md:text-base max-w-2xl font-medium leading-relaxed">
                     {pData.datoCurioso}
                   </p>
                 </motion.div>
 
-                {/* Progress Stats */}
                 <motion.div 
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -142,7 +129,6 @@ const AlbumPais = () => {
         </div>
       </div>
 
-      {/* Figuritas Grid */}
       <div className="max-w-5xl mx-auto px-4 mt-12">
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 md:gap-6 justify-items-center">
           {sortedFiguritas.map((fig, idx) => (
@@ -151,6 +137,13 @@ const AlbumPais = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.03 }}
+              onClick={() => {
+                if (fig.obtenida) {
+                  setSelectedFig(fig);
+                  setIsModalOpen(true);
+                }
+              }}
+              className={fig.obtenida ? "cursor-pointer" : ""}
             >
               <FiguritaCard 
                 figurita={fig} 
@@ -161,6 +154,12 @@ const AlbumPais = () => {
           ))}
         </div>
         
+        <FiguritaModal 
+          figurita={selectedFig}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
+        
         {figuritas.length === 0 && (
           <div className="py-20 text-center">
             <p className="text-slate-500 font-medium">No hay figuritas disponibles para este país aún.</p>
@@ -168,7 +167,6 @@ const AlbumPais = () => {
         )}
       </div>
 
-      {/* Shop Button */}
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -181,4 +179,5 @@ const AlbumPais = () => {
     </div>
   );
 };
+
 export default AlbumPais;

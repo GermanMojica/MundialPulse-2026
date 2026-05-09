@@ -81,6 +81,7 @@ model Figurita {
   peso          String?
   equipo        String?
   imagen        String?
+  stats         Json?    @default("{}")
   colecciones   ColeccionFiguritas[]
 }
 

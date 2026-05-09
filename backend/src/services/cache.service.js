@@ -2,8 +2,28 @@ const Redis = require('ioredis');
 
 // Fallback to memory if REDIS_URL is not set for local dev testing without Redis
 const redis = process.env.REDIS_URL 
-  ? new Redis(process.env.REDIS_URL)
+  ? new Redis(process.env.REDIS_URL, {
+      maxRetriesPerRequest: null,
+      enableReadyCheck: false,
+      reconnectOnError: (err) => {
+        const targetError = 'READONLY';
+        if (err.message.includes(targetError)) {
+          return true;
+        }
+        return false;
+      }
+    })
   : null;
+
+if (redis) {
+  redis.on('error', (err) => {
+    console.warn('⚠️ Redis Connection Warning:', err.message);
+  });
+  
+  redis.on('connect', () => {
+    // Conexión exitosa (silenciada)
+  });
+}
 
 /**
  * Gets a value from cache, handling stale fallback logic.
