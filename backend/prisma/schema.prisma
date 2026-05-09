@@ -22,6 +22,18 @@ model User {
   puntos         Puntos?
   ligasCreadas   LigaPrivada[]  @relation("LigaCreador")
   ligasMiembro   LigaPrivada[]  @relation("LigaMiembros")
+  subscriptions  PushSubscription[]
+}
+
+model PushSubscription {
+  id        String   @id @default(uuid())
+  userId    String?
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+  
+  user      User?    @relation(fields: [userId], references: [id])
 }
 
 model Prediccion {

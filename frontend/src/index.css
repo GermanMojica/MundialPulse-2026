@@ -24,3 +24,29 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
 }
+
+/* Custom Leaflet Styles */
+.leaflet-container {
+  background: #0a0a0a !important;
+}
+
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  background: #1a1a26 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.leaflet-popup-close-button {
+  color: #ffffff !important;
+}
+
+.leaflet-bar a {
+  background-color: #1a1a26 !important;
+  color: #ffffff !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.leaflet-bar a:hover {
+  background-color: #2e303a !important;
+}

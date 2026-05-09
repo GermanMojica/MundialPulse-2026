@@ -107,9 +107,16 @@ const mockMatches = [
 const mockStandings = [{ group: 'GROUP_A', table: [{ position: 1, team: { name: 'Argentina', crest: '🇦🇷' }, points: 3, playedGames: 1, won: 1, draw: 0, lost: 0 }] }];
 const mockScorers = [{ player: { name: 'Lionel Messi' }, team: { crest: '🇦🇷' }, goals: 2 }];
 
+const getPartidosLive = async () => {
+  const date = new Date().toISOString().split('T')[0];
+  const partidos = await getPartidos(date);
+  return partidos.filter(p => p.status === 'IN_PLAY' || p.status === 'PAUSED' || p.status === 'FINISHED');
+};
+
 module.exports = {
   getPartidos,
   getPartidoById,
   getTablaGrupos,
-  getGoleadores
+  getGoleadores,
+  getPartidosLive
 };

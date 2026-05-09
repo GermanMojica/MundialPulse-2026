@@ -2,11 +2,13 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { Navbar } from './Navbar';
 import { BottomNav } from './BottomNav';
+import { InstallBanner } from '../ui/InstallBanner';
 
 export const Layout = () => {
   return (
     <div className="min-h-screen flex flex-col bg-bg text-text">
       <Navbar />
+      <InstallBanner />
       
       {/* 
         Main content wrapper: 
