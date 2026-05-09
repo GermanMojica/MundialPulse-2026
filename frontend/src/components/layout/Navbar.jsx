@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { IoFootball } from 'react-icons/io5';
+import PuntosWidget from '../album/PuntosWidget';
 
 export const Navbar = () => {
   const { user, logout } = useAuth();
@@ -12,6 +13,7 @@ export const Navbar = () => {
     { name: 'Inicio', path: '/' },
     { name: 'Partidos', path: '/partidos' },
     { name: 'Predicciones', path: '/predicciones' },
+    { name: 'Álbum', path: '/album' },
     { name: 'Ranking', path: '/ranking' },
     { name: 'Mapa', path: '/mapa' },
   ];
@@ -32,7 +34,7 @@ export const Navbar = () => {
             <Link
               key={link.name}
               to={link.path}
-              className={`font-medium transition-colors ${
+              className={`font-medium transition-colors flex items-center gap-1 ${
                 isActive ? 'text-primary' : 'text-text-muted hover:text-text'
               } relative`}
             >
@@ -51,23 +53,42 @@ export const Navbar = () => {
       {/* User Actions Right */}
       <div className="flex items-center gap-4">
         {user ? (
-          <div className="flex items-center gap-3 relative group">
-            <span className="text-sm font-medium text-text">{user.username}</span>
-            <div className="w-10 h-10 rounded-full bg-surface-2 overflow-hidden border-2 border-primary/50 cursor-pointer">
-              {user.avatar ? (
-                <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-text font-bold uppercase">
-                  {user.username.charAt(0)}
-                </div>
-              )}
-            </div>
-            
-            {/* Dropdown menu */}
-            <div className="absolute right-0 top-full mt-2 w-48 bg-surface-2 border border-surface rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-              <div className="py-2">
-                <Link to="/perfil" className="block px-4 py-2 text-sm text-text hover:bg-surface transition-colors">Mi Perfil</Link>
-                <button onClick={logout} className="w-full text-left block px-4 py-2 text-sm text-red-400 hover:bg-surface transition-colors">Cerrar Sesión</button>
+          <div className="flex items-center gap-2 relative group">
+            {/* Widget de puntos */}
+            <PuntosWidget />
+
+            <div className="w-px h-5 bg-slate-700 mx-1" />
+
+            {/* Avatar clickable a perfil */}
+            <Link to="/perfil" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
+              <div className="w-9 h-9 rounded-full bg-surface-2 overflow-hidden border-2 border-primary/50 hover:border-primary transition-colors flex-shrink-0">
+                {user.avatar ? (
+                  <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-text font-bold uppercase text-sm">
+                    {user.username.charAt(0)}
+                  </div>
+                )}
+              </div>
+              <span className="text-sm font-medium text-text hidden lg:block">{user.username}</span>
+            </Link>
+
+            {/* Dropdown on group hover */}
+            <div className="absolute right-0 top-full mt-2 w-52 bg-surface-2 border border-surface rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <div className="p-2 border-b border-surface">
+                <p className="text-xs text-text-muted px-2 py-1 truncate">{user.email}</p>
+              </div>
+              <div className="py-1">
+                <Link to="/perfil" className="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-surface rounded-lg mx-1 transition-colors">
+                  👤 Mi Perfil
+                </Link>
+                <Link to="/album" className="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-surface rounded-lg mx-1 transition-colors">
+                  📖 Mi Álbum
+                </Link>
+                <div className="border-t border-surface my-1 mx-2" />
+                <button onClick={logout} className="w-full text-left flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-surface rounded-lg mx-1 transition-colors">
+                  🚪 Cerrar Sesión
+                </button>
               </div>
             </div>
           </div>

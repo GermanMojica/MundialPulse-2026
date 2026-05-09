@@ -8,6 +8,7 @@
     "dev": "nodemon server.js",
     "migrate": "prisma migrate deploy",
     "seed": "node prisma/seed.js",
+    "seed:album": "node prisma/seed-album.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

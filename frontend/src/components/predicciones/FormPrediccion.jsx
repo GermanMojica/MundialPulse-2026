@@ -41,18 +41,34 @@ export const FormPrediccion = ({ partido, onSaved }) => {
     );
   }
 
+  const renderCrest = (team) => {
+    if (!team.crest) return <span className="text-4xl mb-2">⚽</span>;
+    if (team.crest.startsWith('http')) {
+      return (
+        <img 
+          src={team.crest} 
+          alt={team.name} 
+          className="w-12 h-12 md:w-16 md:h-16 object-contain mb-4 drop-shadow-lg" 
+        />
+      );
+    }
+    return <div className="text-4xl mb-2">{team.crest}</div>;
+  };
+
   return (
     <motion.form 
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       onSubmit={handleSubmit}
-      className="bg-card rounded-2xl p-6 border border-white/5 shadow-xl"
+      className="bg-card rounded-2xl p-6 border border-white/5 shadow-xl flex flex-col h-full"
     >
-      <div className="flex items-center justify-between gap-4 mb-6">
+      <div className="flex items-center justify-between gap-4 mb-6 flex-grow">
         {/* Team Local */}
         <div className="flex-1 flex flex-col items-center">
-          <div className="text-4xl mb-2">{partido.homeTeam.crest}</div>
-          <span className="text-xs font-bold text-text-muted uppercase text-center">{partido.homeTeam.tla}</span>
+          {renderCrest(partido.homeTeam)}
+          <span className="text-xs font-black text-text-muted uppercase text-center truncate w-full px-2" title={partido.homeTeam.name}>
+            {partido.homeTeam.tla || partido.homeTeam.name}
+          </span>
           <input 
             type="number"
             min="0"
@@ -67,8 +83,10 @@ export const FormPrediccion = ({ partido, onSaved }) => {
 
         {/* Team Away */}
         <div className="flex-1 flex flex-col items-center">
-          <div className="text-4xl mb-2">{partido.awayTeam.crest}</div>
-          <span className="text-xs font-bold text-text-muted uppercase text-center">{partido.awayTeam.tla}</span>
+          {renderCrest(partido.awayTeam)}
+          <span className="text-xs font-black text-text-muted uppercase text-center truncate w-full px-2" title={partido.awayTeam.name}>
+            {partido.awayTeam.tla || partido.awayTeam.name}
+          </span>
           <input 
             type="number"
             min="0"

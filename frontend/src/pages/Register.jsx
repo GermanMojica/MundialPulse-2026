@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { Button, Card } from '../components/ui';
 import { IoFootball } from 'react-icons/io5';
 import toast from 'react-hot-toast';
+import SobreModal from '../components/album/SobreModal';
 
 export const Register = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,9 @@ export const Register = () => {
     confirmPassword: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [sobreAbierto, setSobreAbierto] = useState(false);
+  const [sobreData, setSobreData] = useState([]);
+  
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -20,27 +24,25 @@ export const Register = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    const { username, email, password, confirmPassword } = formData;
-
-    if (!username || !email || !password || !confirmPassword) {
-      toast.error('Todos los campos son obligatorios');
-      return;
-    }
-
-    if (password !== confirmPassword) {
+    if (formData.password !== formData.confirmPassword) {
       toast.error('Las contraseñas no coinciden');
       return;
     }
     
     setIsSubmitting(true);
     try {
-      await register(username, email, password);
-      toast.success('¡Cuenta creada con éxito!');
-      navigate('/');
+      const res = await register(formData.email, formData.password, formData.username);
+      if (res && res.sobreRegalo) {
+        setSobreData(res.sobreRegalo.figuritas || []);
+        setSobreAbierto(true);
+      } else {
+        toast.success('¡Registro exitoso!');
+        navigate('/');
+      }
     } catch (error) {
-      toast.error(error.message || 'Error al registrar usuario');
+      toast.error(error.response?.data?.error || 'Error al registrarse');
     } finally {
       setIsSubmitting(false);
     }
@@ -59,7 +61,7 @@ export const Register = () => {
         <Card className="shadow-2xl">
           <h2 className="text-2xl font-bold text-center text-text mb-6">Crear Cuenta</h2>
           
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleRegister} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-text-muted mb-1">Nombre de Usuario</label>
               <input 
@@ -125,6 +127,17 @@ export const Register = () => {
           </p>
         </Card>
       </div>
+
+      {/* Modal de recompensa */}
+      <SobreModal 
+        isOpen={sobreAbierto} 
+        onClose={() => navigate('/')} 
+        figuritas={sobreData} 
+        tipo="basico"
+        title="Bienvenido a MundialPulse — tu sobre de regalo"
+      />
     </div>
   );
 };
+
+export default Register;

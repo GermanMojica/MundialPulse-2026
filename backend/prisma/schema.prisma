@@ -20,6 +20,8 @@ model User {
   
   predicciones   Prediccion[]
   puntos         Puntos?
+  coleccion      ColeccionFiguritas[]
+  transacciones  TransaccionPuntos[]
   ligasCreadas   LigaPrivada[]  @relation("LigaCreador")
   ligasMiembro   LigaPrivada[]  @relation("LigaMiembros")
   subscriptions  PushSubscription[]
@@ -48,13 +50,11 @@ model Prediccion {
 }
 
 model Puntos {
-  id                String @id @default(uuid())
-  userId            String @unique
-  total             Int    @default(0)
-  partidosAcertados Int    @default(0)
-  resultadosExactos Int    @default(0)
-
-  user              User   @relation(fields: [userId], references: [id])
+  id       String @id @default(cuid())
+  userId   String @unique
+  total    Int    @default(0)
+  gastados Int    @default(0)
+  user     User   @relation(fields: [userId], references: [id])
 }
 
 model LigaPrivada {
@@ -65,4 +65,43 @@ model LigaPrivada {
 
   creador   User     @relation("LigaCreador", fields: [creadorId], references: [id])
   miembros  User[]   @relation("LigaMiembros")
+}
+
+model Figurita {
+  id            String   @id @default(cuid())
+  numero        Int      @unique
+  nombre        String
+  pais          String
+  paisCodigo    String
+  posicion      String
+  rareza        String
+  datosCurioso  String?
+  fechaNac      String?
+  altura        String?
+  peso          String?
+  equipo        String?
+  imagen        String?
+  colecciones   ColeccionFiguritas[]
+}
+
+model ColeccionFiguritas {
+  id          String   @id @default(cuid())
+  userId      String
+  figuritaId  String
+  cantidad    Int      @default(1)
+  obtenidaEn  DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+  figurita    Figurita @relation(fields: [figuritaId], references: [id])
+  @@unique([userId, figuritaId])
+}
+
+model TransaccionPuntos {
+  id          String   @id @default(cuid())
+  userId      String
+  cantidad    Int
+  tipo        String
+  descripcion String
+  createdAt   DateTime @default(now())
+  
+  user        User     @relation(fields: [userId], references: [id])
 }

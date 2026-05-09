@@ -18,8 +18,10 @@ const usuariosRoutes = require('./src/routes/usuarios.routes');
 const torneoRoutes = require('./src/routes/torneo.routes');
 const ligasRoutes = require('./src/routes/ligas.routes');
 const pushRoutes = require('./src/routes/push.routes');
+const albumRoutes = require('./src/routes/album.routes');
 const prediccionesService = require('./src/services/predicciones.service');
 const pushController = require('./src/controllers/push.controller');
+const telegramService = require('./src/services/telegram.service');
 
 const app = express();
 const server = http.createServer(app);
@@ -29,6 +31,7 @@ const io = new Server(server, {
     methods: ["GET", "POST"]
   }
 });
+app.set('io', io);
 
 const PORT = process.env.PORT || 5000;
 
@@ -43,6 +46,7 @@ app.use('/api/predicciones', prediccionesRoutes);
 app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/ligas', ligasRoutes);
 app.use('/api/push', pushRoutes);
+app.use('/api/album', albumRoutes);
 app.use('/api', torneoRoutes);
 
 // Middleware de Socket.IO para Autenticación
@@ -71,6 +75,11 @@ io.on('connection', (socket) => {
 
   // Unirse a sala global por defecto
   socket.join('global');
+
+  // Unirse a su sala personal si está autenticado
+  if (socket.user && socket.user.userId) {
+    socket.join(`user-${socket.user.userId}`);
+  }
 
   socket.on('join:partido', ({ partidoId }) => {
     const room = `partido-${partidoId}`;
@@ -140,6 +149,11 @@ cron.schedule('*/30 * * * * *', async () => {
           icon: '/pwa-192x192.png',
           data: { url: `/partidos/${match.id}` }
         });
+
+        // Enviar a Telegram (Canal principal)
+        telegramService.broadcastToTelegram(
+          `⚽ <b>¡GOL!</b>\n\n${equipo === 'home' ? match.homeTeam.name : match.awayTeam.name} marcó.\nMarcador: ${currentState.score.home}-${currentState.score.away}\nMinuto: ${currentState.minute}'`
+        );
         
         console.log(`¡GOL en partido ${match.id}! Nuevo marcador: ${currentState.score.home}-${currentState.score.away}`);
       }
@@ -164,7 +178,7 @@ cron.schedule('*/30 * * * * *', async () => {
         });
         
         // Procesar puntos para todas las predicciones de este partido
-        await prediccionesService.procesarPuntosPartido(match.id, currentState.score);
+        await prediccionesService.procesarPuntosPartido(match.id, currentState.score, io);
       }
 
       // Actualizar estado en cache

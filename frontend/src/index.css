@@ -50,3 +50,10 @@ body {
 .leaflet-bar a:hover {
   background-color: #2e303a !important;
 }
+
+@keyframes shimmer {
+  0%   { border-color: #EF9F27; box-shadow: 0 0 5px rgba(239, 159, 39, 0.5); }
+  50%  { border-color: #FAC775; box-shadow: 0 0 15px rgba(250, 199, 117, 0.8); }
+  100% { border-color: #EF9F27; box-shadow: 0 0 5px rgba(239, 159, 39, 0.5); }
+}
+.shimmer { animation: shimmer 2s ease-in-out infinite; }

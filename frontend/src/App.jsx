@@ -12,6 +12,9 @@ import { Partidos } from './pages/Partidos';
 import { PartidoDetalle } from './pages/PartidoDetalle';
 import { Predicciones } from './pages/Predicciones';
 import { Mapa } from './pages/Mapa';
+import Album from './pages/Album';
+import AlbumPais from './pages/AlbumPais';
+import Perfil from './pages/Perfil';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -62,7 +65,24 @@ function App() {
                   </ProtectedRoute>
                 } />
                 
+                <Route path="album" element={
+                  <ProtectedRoute>
+                    <Album />
+                  </ProtectedRoute>
+                } />
+                <Route path="album/pais/:codigo" element={
+                  <ProtectedRoute>
+                    <AlbumPais />
+                  </ProtectedRoute>
+                } />
+                
                 <Route path="mapa" element={<Mapa />} />
+                
+                <Route path="perfil" element={
+                  <ProtectedRoute>
+                    <Perfil />
+                  </ProtectedRoute>
+                } />
               </Route>
             </Routes>
           </Router>

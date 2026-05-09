@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
 
-const VAPID_PUBLIC_KEY = 'BNhtFcABJ1Ubf30wduqAJv0ISg7CjBsTJFXNt8GUwVf8NwlEqaz9EXh3dszDpZ3T9cISxuvwYr_S1IdDNj-9ApQ';
+const VAPID_PUBLIC_KEY = 'BA-LrW7HGZPty6i-JpvKJBWJiVJmZJ4VZck6-CcdztOGBCt2yfUayukBM4pEG1VKKphD6O7MxnKDLf9ByBYS01Q';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export const usePush = () => {

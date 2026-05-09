@@ -1,4 +1,5 @@
 const prisma = require('../models/db');
+const { calcularPuntosPrediccionInterna } = require('../controllers/album.controller');
 
 /**
  * Calcula los puntos para una predicción basada en el resultado real.
@@ -35,30 +36,10 @@ const calcularPuntos = (prediccion, resultadoReal) => {
   return puntos;
 };
 
-const procesarPuntosPartido = async (partidoId, resultadoReal) => {
+const procesarPuntosPartido = async (partidoId, resultadoReal, io) => {
   try {
-    // Obtener todas las predicciones para este partido que no han sido procesadas
-    // (En este esquema no tenemos un flag 'procesada', así que lo ideal sería filtrar por las que no tienen puntos asignados aún o simplemente procesar todas)
-    const predicciones = await prisma.prediccion.findMany({
-      where: { partidoId }
-    });
-
-    for (const pred of predicciones) {
-      const puntosObtenidos = calcularPuntos(pred, resultadoReal);
-      
-      if (puntosObtenidos > 0) {
-        // Actualizar puntos del usuario
-        await prisma.puntos.update({
-          where: { userId: pred.userId },
-          data: {
-            total: { increment: puntosObtenidos },
-            partidosAcertados: { increment: puntosObtenidos >= 2 ? 1 : 0 },
-            resultadosExactos: { increment: puntosObtenidos === 5 ? 1 : 0 }
-          }
-        });
-      }
-    }
-    
+    const { home, away } = resultadoReal;
+    await calcularPuntosPrediccionInterna(partidoId, home, away, io);
     console.log(`Puntos procesados para el partido ${partidoId}`);
   } catch (error) {
     console.error('Error procesando puntos:', error);

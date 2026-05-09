@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const prisma = require('../models/db');
+const { darSobreRegistro } = require('./album.controller');
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
@@ -30,13 +31,10 @@ const register = async (req, res, next) => {
         email,
         username,
         password: hashedPassword,
-        puntos: {
-          create: {
-            total: 0
-          }
-        }
       }
     });
+
+    const figuritasRegalo = await darSobreRegistro(user.id);
 
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
       expiresIn: '7d',
@@ -49,7 +47,8 @@ const register = async (req, res, next) => {
         id: user.id,
         email: user.email,
         username: user.username,
-      }
+      },
+      sobreRegalo: { figuritas: figuritasRegalo }
     });
   } catch (error) {
     next(error);

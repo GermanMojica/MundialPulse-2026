@@ -19,6 +19,20 @@ export const PartidoCard = ({ partido }) => {
     return <span className="text-xs font-bold text-blue-400">{timeFormatted}</span>;
   };
 
+  const renderCrest = (team, fallback) => {
+    if (!team.crest) return <span className="text-3xl">{fallback}</span>;
+    if (team.crest.startsWith('http')) {
+      return (
+        <img 
+          src={team.crest} 
+          alt={team.name} 
+          className="w-10 h-10 object-contain drop-shadow-md group-hover:scale-110 transition-transform" 
+        />
+      );
+    }
+    return <span className="text-3xl">{team.crest}</span>;
+  };
+
   return (
     <div 
       onClick={() => navigate(`/partidos/${id}`)}
@@ -39,7 +53,7 @@ export const PartidoCard = ({ partido }) => {
       <div className="flex justify-between items-center flex-grow py-2">
         {/* Home */}
         <div className="flex flex-col items-center gap-2 w-1/3">
-          <span className="text-3xl">{homeTeam.crest || '🏠'}</span>
+          {renderCrest(homeTeam, '🏠')}
           <span className="font-semibold text-sm text-center truncate w-full" title={homeTeam.name}>{homeTeam.tla || homeTeam.name}</span>
         </div>
 
@@ -56,7 +70,7 @@ export const PartidoCard = ({ partido }) => {
 
         {/* Away */}
         <div className="flex flex-col items-center gap-2 w-1/3">
-          <span className="text-3xl">{awayTeam.crest || '✈️'}</span>
+          {renderCrest(awayTeam, '✈️')}
           <span className="font-semibold text-sm text-center truncate w-full" title={awayTeam.name}>{awayTeam.tla || awayTeam.name}</span>
         </div>
       </div>

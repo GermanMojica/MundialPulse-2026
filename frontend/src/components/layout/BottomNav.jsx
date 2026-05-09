@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { IoHome, IoFootball, IoStatsChart, IoTrophy, IoMap } from 'react-icons/io5';
+import { IoHome, IoFootball, IoStatsChart, IoTrophy, IoBook, IoPerson } from 'react-icons/io5';
 
 export const BottomNav = () => {
   const location = useLocation();
@@ -9,8 +9,8 @@ export const BottomNav = () => {
     { icon: IoHome, path: '/', name: 'Inicio' },
     { icon: IoFootball, path: '/partidos', name: 'Partidos' },
     { icon: IoStatsChart, path: '/predicciones', name: 'Predicciones' },
-    { icon: IoTrophy, path: '/ranking', name: 'Ranking' },
-    { icon: IoMap, path: '/mapa', name: 'Mapa' },
+    { icon: IoBook, path: '/album', name: 'Álbum' },
+    { icon: IoPerson, path: '/perfil', name: 'Perfil' },
   ];
 
   return (
