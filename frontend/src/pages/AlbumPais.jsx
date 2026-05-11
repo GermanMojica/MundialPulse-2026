@@ -80,13 +80,28 @@ const AlbumPais = () => {
               <span className="text-xs font-black uppercase tracking-widest">Volver al Álbum</span>
             </motion.button>
 
-            <div className="flex flex-col md:flex-row items-center md:items-end gap-6 md:gap-10">
+            <div className="flex flex-col md:flex-row items-center md:items-center gap-6 md:gap-10">
+              {/* Official Crest */}
               <motion.div
                 initial={{ scale: 0.5, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-slate-900 border-4 border-white/10 shadow-2xl flex items-center justify-center text-7xl md:text-8xl drop-shadow-2xl"
+                className="w-32 h-32 md:w-48 md:h-48 rounded-full bg-slate-900/80 border-4 border-white/10 shadow-2xl flex items-center justify-center p-6 relative group overflow-hidden"
               >
-                {pData.bandera}
+                {/* Internal Glow */}
+                <div 
+                  className="absolute inset-0 opacity-20 blur-2xl group-hover:opacity-40 transition-opacity"
+                  style={{ backgroundColor: pData.colorPrimario }}
+                />
+                <img 
+                  src={pData.escudo} 
+                  alt={pData.nombre} 
+                  className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] group-hover:scale-110 transition-transform duration-700"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'block';
+                  }}
+                />
+                <div className="text-8xl hidden">{pData.bandera}</div>
               </motion.div>
 
               <div className="flex-1 text-center md:text-left">
@@ -95,32 +110,47 @@ const AlbumPais = () => {
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.1 }}
                 >
-                  <div className="flex flex-col md:flex-row items-center gap-4 mb-2">
-                    <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase italic">
+                  <div className="flex flex-col md:flex-row items-center gap-4 mb-3">
+                    <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase italic drop-shadow-lg">
                       {pData.nombre}
                     </h1>
-                    <span className="bg-primary/20 text-primary text-[10px] font-black px-3 py-1 rounded-full border border-primary/20 uppercase tracking-widest">
+                    <span className="bg-primary/20 text-primary text-[10px] font-black px-4 py-1.5 rounded-full border border-primary/20 uppercase tracking-widest shadow-[0_0_15px_rgba(34,197,94,0.2)]">
                       FIFA World Cup 2026
                     </span>
                   </div>
-                  <p className="text-slate-400 text-sm md:text-base max-w-2xl font-medium leading-relaxed">
-                    {pData.datoCurioso}
+                  
+                  {/* Fun Fact */}
+                  <p className="text-slate-300 text-sm md:text-lg max-w-2xl font-medium leading-relaxed italic opacity-90">
+                    "{pData.datoCurioso}"
                   </p>
                 </motion.div>
 
+                {/* Team Achievements & Stats Row */}
                 <motion.div 
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.2 }}
-                  className="mt-8 grid grid-cols-2 gap-4 max-w-sm mx-auto md:mx-0"
+                  className="mt-8 flex flex-wrap justify-center md:justify-start gap-4"
                 >
-                  <div className="bg-white/5 rounded-2xl p-3 border border-white/5">
-                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1">Coleccionadas</p>
-                    <p className="text-white font-black text-xl">{obtenidas} / {total}</p>
+                  <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10 min-w-[140px] shadow-xl">
+                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1">Mejor Resultado</p>
+                    <p className="text-white font-black text-sm uppercase">{pData.mejorResultado}</p>
                   </div>
-                  <div className="bg-white/5 rounded-2xl p-3 border border-white/5">
-                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1">Completado</p>
-                    <p className="text-primary font-black text-xl">{porcentaje}%</p>
+
+                  <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10 min-w-[100px] shadow-xl">
+                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1">Campeón</p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-yellow-400 font-black text-xl">{pData.titulosMundiales}</p>
+                      <span className="text-yellow-500 text-sm">★</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10 min-w-[120px] shadow-xl">
+                    <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1">Colección</p>
+                    <div className="flex items-end gap-1">
+                      <p className="text-white font-black text-xl">{obtenidas} / {total}</p>
+                      <p className="text-primary text-xs font-black mb-0.5">({porcentaje}%)</p>
+                    </div>
                   </div>
                 </motion.div>
               </div>

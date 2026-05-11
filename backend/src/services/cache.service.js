@@ -17,6 +17,8 @@ const redis = process.env.REDIS_URL
 
 if (redis) {
   redis.on('error', (err) => {
+    // Silenciamos avisos de desconexión ruidosos que no afectan al sistema
+    if (err.message.includes('ECONNRESET')) return;
     console.warn('⚠️ Redis Connection Warning:', err.message);
   });
   

@@ -57,3 +57,32 @@ body {
   100% { border-color: #EF9F27; box-shadow: 0 0 5px rgba(239, 159, 39, 0.5); }
 }
 .shimmer { animation: shimmer 2s ease-in-out infinite; }
+
+/* Efecto Holográfico para Cartas Especiales */
+.sticker-especial::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    125deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.1) 30%,
+    rgba(255,255,255,0.5) 50%,
+    rgba(255,255,255,0.1) 70%,
+    rgba(255,255,255,0) 100%
+  );
+  background-size: 200% 200%;
+  animation: holo 3s infinite linear;
+  pointer-events: none;
+  z-index: 25;
+}
+
+@keyframes holo {
+  0% { background-position: -200% -200%; }
+  100% { background-position: 200% 200%; }
+}
+
+.sticker-especial {
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+

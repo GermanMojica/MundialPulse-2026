@@ -26,10 +26,24 @@ const GridPaises = ({ paises }) => {
               {paisData.paisCodigo || paisData.codigo}
             </div>
 
-            {/* Flag Container */}
+            {/* Crest Container */}
             <div className="flex justify-center mb-3">
-              <div className="w-16 h-16 rounded-full bg-slate-800/50 flex items-center justify-center text-4xl drop-shadow-xl border border-white/5 group-hover:scale-110 transition-transform duration-500">
-                {pData.bandera}
+              <div className="w-16 h-16 relative flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                {/* Glow Background */}
+                <div 
+                  className="absolute inset-0 blur-lg opacity-20 rounded-full"
+                  style={{ backgroundColor: pData.colorPrimario }}
+                />
+                <img 
+                  src={pData.escudo} 
+                  alt={pData.nombre}
+                  className="w-full h-full object-contain relative z-10 drop-shadow-md"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'block';
+                  }}
+                />
+                <div className="text-4xl hidden">{pData.bandera}</div>
               </div>
             </div>
 
